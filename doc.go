@@ -1,4 +1,4 @@
-// Package rabbitmq is a small, production-oriented Go client for RabbitMQ
+// Package RabbitMQ is a small, production-oriented Go client for RabbitMQ
 // built on top of github.com/rabbitmq/amqp091-go (the maintained successor of
 // the archived streadway/amqp).
 //
@@ -14,7 +14,7 @@
 //
 // # Quick start (simple mode)
 //
-//	c, err := rabbitmq.NewSimple("amqp://guest:guest@localhost:5672/", "tasks")
+//	c, err := RabbitMQ.NewSimple("amqp://guest:guest@localhost:5672/", "tasks")
 //	if err != nil {
 //		// The error is returned instead of log.Fatal — the caller decides
 //		// how to handle a broker that is down at startup.
@@ -31,4 +31,4 @@
 //
 // See the README for full documentation, configuration options, and the
 // migration guide for the legacy TRabbitMQ API.
-package rabbitmq
+package RabbitMQ

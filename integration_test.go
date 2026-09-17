@@ -6,7 +6,7 @@
 //	go test -tags=integration ./...
 //
 // The broker URL can be overridden with the RABBITMQ_URL environment variable.
-package rabbitmq_test
+package RabbitMQ_test
 
 import (
 	"context"
@@ -28,13 +28,13 @@ var testURL = func() string {
 	return "amqp://guest:guest@localhost:5672/"
 }()
 
-func newTestClient(t *testing.T, opts ...rabbitmq.Option) *rabbitmq.Client {
+func newTestClient(t *testing.T, opts ...RabbitMQ.Option) *RabbitMQ.Client {
 	t.Helper()
-	opts = append([]rabbitmq.Option{
-		rabbitmq.WithDialTimeout(5 * time.Second),
-		rabbitmq.WithReconnect(false), // fail fast in tests
+	opts = append([]RabbitMQ.Option{
+		RabbitMQ.WithDialTimeout(5 * time.Second),
+		RabbitMQ.WithReconnect(false), // fail fast in tests
 	}, opts...)
-	c, err := rabbitmq.New(testURL, opts...)
+	c, err := RabbitMQ.New(testURL, opts...)
 	if err != nil {
 		t.Fatalf("connect: %v", err)
 	}
@@ -46,7 +46,7 @@ func uniqueQueue(base string) string {
 	return fmt.Sprintf("%s-%d", base, time.Now().UnixNano())
 }
 
-func deleteQueue(t *testing.T, c *rabbitmq.Client, queue string) {
+func deleteQueue(t *testing.T, c *RabbitMQ.Client, queue string) {
 	t.Helper()
 	_ = c.WithChannel(context.Background(), func(ch *amqp.Channel) error {
 		_, err := ch.QueueDelete(queue, false, false, false)
@@ -94,8 +94,8 @@ func TestPublishConsumeRoundTrip(t *testing.T) {
 // back to the queue configured at construction.
 func TestDefaultQueueFallback(t *testing.T) {
 	queue := uniqueQueue("simple")
-	c, err := rabbitmq.NewSimple(testURL, queue,
-		rabbitmq.WithDialTimeout(5*time.Second), rabbitmq.WithReconnect(false))
+	c, err := RabbitMQ.NewSimple(testURL, queue,
+		RabbitMQ.WithDialTimeout(5*time.Second), RabbitMQ.WithReconnect(false))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -129,7 +129,7 @@ func TestDefaultQueueFallback(t *testing.T) {
 // TestManualAckNackRequeue verifies at-least-once handling: a handler error
 // nacks and requeues, so the message is redelivered.
 func TestManualAckNackRequeue(t *testing.T) {
-	c := newTestClient(t, rabbitmq.WithAutoAck(false), rabbitmq.WithRequeueOnError(true))
+	c := newTestClient(t, RabbitMQ.WithAutoAck(false), RabbitMQ.WithRequeueOnError(true))
 	queue := uniqueQueue("nack")
 	t.Cleanup(func() { deleteQueue(t, c, queue) })
 
@@ -205,7 +205,7 @@ func TestPublishWithExchangeDefault(t *testing.T) {
 }
 
 func TestDurableQueues(t *testing.T) {
-	c := newTestClient(t, rabbitmq.WithDurableQueues(true))
+	c := newTestClient(t, RabbitMQ.WithDurableQueues(true))
 	queue := uniqueQueue("durable")
 	t.Cleanup(func() { deleteQueue(t, c, queue) })
 
@@ -219,7 +219,7 @@ func TestDurableQueues(t *testing.T) {
 }
 
 func TestPrefetch(t *testing.T) {
-	c := newTestClient(t, rabbitmq.WithPrefetch(1))
+	c := newTestClient(t, RabbitMQ.WithPrefetch(1))
 	queue := uniqueQueue("prefetch")
 	t.Cleanup(func() { deleteQueue(t, c, queue) })
 
@@ -334,7 +334,7 @@ func TestCloseStopsConsumer(t *testing.T) {
 
 	select {
 	case err := <-done:
-		if !errors.Is(err, rabbitmq.ErrClosed) {
+		if !errors.Is(err, RabbitMQ.ErrClosed) {
 			t.Fatalf("got %v, want ErrClosed", err)
 		}
 	case <-time.After(15 * time.Second):

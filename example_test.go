@@ -1,7 +1,7 @@
 //go:build integration
 
 // Runnable godoc examples (run with: go test -tags=integration ./...).
-package rabbitmq_test
+package RabbitMQ_test
 
 import (
 	"context"
@@ -14,8 +14,8 @@ import (
 )
 
 func ExampleNewSimple() {
-	c, err := rabbitmq.NewSimple("amqp://guest:guest@localhost:5672/", "tasks",
-		rabbitmq.WithDialTimeout(5*time.Second))
+	c, err := RabbitMQ.NewSimple("amqp://guest:guest@localhost:5672/", "tasks",
+		RabbitMQ.WithDialTimeout(5*time.Second))
 	if err != nil {
 		log.Fatal(err) // in real code: return the error to your caller
 	}
@@ -30,8 +30,8 @@ func ExampleNewSimple() {
 }
 
 func ExampleClient_Consume() {
-	c, err := rabbitmq.NewSimple("amqp://guest:guest@localhost:5672/", "tasks",
-		rabbitmq.WithDialTimeout(5*time.Second))
+	c, err := RabbitMQ.NewSimple("amqp://guest:guest@localhost:5672/", "tasks",
+		RabbitMQ.WithDialTimeout(5*time.Second))
 	if err != nil {
 		log.Fatal(err)
 	}

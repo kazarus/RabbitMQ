@@ -64,7 +64,7 @@ import (
 
 func main() {
 	// A failed connection is an error, not a crash.
-	c, err := rabbitmq.NewSimple("amqp://guest:guest@localhost:5672/", "tasks")
+	c, err := RabbitMQ.NewSimple("amqp://guest:guest@localhost:5672/", "tasks")
 	if err != nil {
 		log.Fatalf("connect: %v", err)
 	}
